@@ -1,0 +1,19 @@
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Backups avulsos gerados pelo botao Export
+# (o progresso versionado e study-roadmap/progress.json, esse sim commitado)
+engineering-roadmap-*.json
+
+# Node — so caso um dia entre tooling; o app em si nao usa build
+node_modules/
+package-lock.json
