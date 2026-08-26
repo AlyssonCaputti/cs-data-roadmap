@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "topics": {},
+  "activeStudies": [],
+  "pausedStudies": [],
+  "completedStudies": [],
+  "currentBook": null,
+  "bookProgress": 0,
+  "pausedBooks": [],
+  "completedBooks": [],
+  "freeStudy": [],
+  "competitiveProgramming": {
+    "solved": 0,
+    "easy": 0,
+    "medium": 0,
+    "hard": 0,
+    "daily": {}
+  },
+  "studyTime": {
+    "total": 0,
+    "days": {}
+  },
+  "notes": {},
+  "weekly": {},
+  "todayChecks": {},
+  "theme": "dark",
+  "filter": "all",
+  "openLevels": [],
+  "cpp": {},
+  "dsa": {},
+  "courses": {},
+  "projectSteps": {},
+  "savedAt": null
+}
