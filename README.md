@@ -96,7 +96,9 @@ progress.json       # progresso versionado
 skill.md            # especificação que originou a aplicação
 src/
 ├── data/           # roadmap, catálogo e índice de tópicos — só dados
-│   ├── roadmap.js      410 tópicos em 14 níveis
+│   ├── roadmap.js      declara ROADMAP (vazio) e o helper T
+│   ├── roadmap/        410 tópicos, um arquivo por nível
+│   │   └── level-00.js … level-13.js   cada um faz ROADMAP.push(…)
 │   ├── catalog.js      cursos, livros, trilhas, projetos
 │   └── index.js        id estável -> tópico
 ├── core/           # estado e o Store observer
@@ -145,6 +147,12 @@ A tabela de dependência vive inteira em [src/app/subscriptions.js](src/app/subs
 As dependências apontam numa direção só: `data → core → ui → domain → views → app`.
 Os scripts são clássicos, não módulos ES, justamente para que `index.html` continue
 abrindo direto do disco via `file://` sem precisar de servidor.
+
+Por isso o roadmap é dividido em `roadmap.js` + `roadmap/level-NN.js`: o primeiro
+declara `ROADMAP = []` e o helper `T`, e cada nível se registra com `ROADMAP.push(…)`.
+Sem `import`, a ordem no `index.html` é o que garante que `T` exista quando cada nível
+é avaliado — **`roadmap.js` precisa vir antes de `roadmap/`**. Para adicionar um nível,
+crie o arquivo e acrescente a tag `<script>` correspondente.
 
 ## Backup
 
