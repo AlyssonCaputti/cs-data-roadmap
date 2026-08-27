@@ -13,14 +13,14 @@ Não há build, backend nem dependências. Abra o arquivo:
 
 ```bash
 git clone https://github.com/AlyssonCaputti/<repo>.git
-cd <repo>/study-roadmap
+cd <repo>/data-engineer
 start index.html          # Windows
 ```
 
 Para usar a sincronização automática de progresso (ver abaixo), sirva por HTTP:
 
 ```bash
-cd study-roadmap
+cd data-engineer
 python -m http.server 8000
 # abra http://localhost:8000
 ```
@@ -55,16 +55,16 @@ o que quiser, na ordem que quiser.
 
 O progresso fica em `localStorage`, que é **por navegador e por máquina**. Para levá-lo
 de um computador a outro, ele é versionado no próprio repositório como
-`study-roadmap/progress.json`.
+`data-engineer/progress.json`.
 
 **Ao terminar de estudar:**
 
 1. Settings → **Salvar p/ repo** (baixa `progress.json`)
-2. mova o arquivo baixado para `study-roadmap/`, substituindo o existente
+2. mova o arquivo baixado para `data-engineer/`, substituindo o existente
 3. commite:
 
 ```bash
-git add study-roadmap/progress.json
+git add data-engineer/progress.json
 git commit -m "progresso: 2026-08-25"
 git push
 ```
@@ -90,15 +90,61 @@ estudos ao longo do tempo com `git log`.
 ## Estrutura
 
 ```
-study-roadmap/
-├── index.html      # estrutura semântica, acessível
-├── styles.css      # tema claro/escuro, responsivo, sidebar em rail
-├── app.js          # dados do roadmap + estado + render
-└── progress.json   # progresso versionado
+index.html          # estrutura semântica; carrega os scripts na ordem
+styles.css          # tema claro/escuro, responsivo, sidebar em rail
+progress.json       # progresso versionado
 skill.md            # especificação que originou a aplicação
+src/
+├── data/           # roadmap, catálogo e índice de tópicos — só dados
+│   ├── roadmap.js      410 tópicos em 14 níveis
+│   ├── catalog.js      cursos, livros, trilhas, projetos
+│   └── index.js        id estável -> tópico
+├── core/           # estado e o Store observer
+│   ├── state.js        shape e valores padrão
+│   ├── persistence.js  localStorage: migrar, carregar, salvar
+│   └── store.js        commit / publish / canais
+├── ui/             # primitivos sem regra de negócio
+│   ├── dom.js          seletores, criação de elementos, datas
+│   ├── toast.js
+│   └── modal.js
+├── domain/         # as regras: foco, livro único, prática, timer
+│   ├── studies.js      máximo 2 ativos
+│   ├── books.js        máximo 1 ativo
+│   ├── practice.js     meta diária e streak
+│   └── timer.js
+├── views/          # render puro; assinam canais do Store
+│   ├── dashboard.js  today.js  roadmap.js  practice.js
+│   └── books.js  projects.js  review.js
+└── app/            # composição
+    ├── sync.js         Git sync, export, import, reset
+    ├── shell.js        tema, troca de view, sidebar
+    ├── subscriptions.js  tabela view -> canais
+    ├── events.js       binding do DOM
+    └── main.js         bootstrap
 ```
 
 Sem framework, sem backend, sem build. HTML5, CSS3 e JavaScript moderno.
+
+### Arquitetura
+
+O fluxo é unidirecional. Nenhuma view chama outra view:
+
+```
+interação → domain (regra) → Store.commit(canais) → persiste → publica
+                                                                  ↓
+                                              views que assinam o canal redesenham
+```
+
+`Store` ([src/core/store.js](src/core/store.js)) é o **único ponto de mutação**. Cada
+`commit` diz *quais canais* ficaram obsoletos (`topics`, `books`, `practice`…); quem
+depende deles se redesenha sozinho. Os renders são agrupados num frame — várias
+mutações na mesma interação resultam em um repaint — e views fora da tela são puladas.
+
+A tabela de dependência vive inteira em [src/app/subscriptions.js](src/app/subscriptions.js).
+
+As dependências apontam numa direção só: `data → core → ui → domain → views → app`.
+Os scripts são clássicos, não módulos ES, justamente para que `index.html` continue
+abrindo direto do disco via `file://` sem precisar de servidor.
 
 ## Backup
 

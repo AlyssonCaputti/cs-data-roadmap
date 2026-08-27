@@ -17,3 +17,5 @@ engineering-roadmap-*.json
 # Node — so caso um dia entre tooling; o app em si nao usa build
 node_modules/
 package-lock.json
+
+skill.md
